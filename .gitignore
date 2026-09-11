@@ -10,3 +10,9 @@ assets/icons/apple-touch-icon.png
 assets/icons/icon-192.png
 assets/icons/icon-512.png
 /favicon.ico
+# Observable Framework
+performance/node_modules/
+performance/dist/
+performance/docs/.observablehq/
+
+.bundle/
