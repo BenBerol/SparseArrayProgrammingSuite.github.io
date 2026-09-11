@@ -24,33 +24,20 @@
 .greedy-nav .site-title.saps-brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.18rem;
   flex: 0 0 auto;
   margin-right: 1rem;
   padding: 0;
 }
 
-.saps-brand__icon {
+.saps-brand__logo {
   display: block;
   width: auto;
   height: 1.85rem;
 }
 
-.saps-brand__text {
-  color: #808080;
-  font-family: "Pixelify Sans", "Courier New", monospace;
-  font-size: 1.85rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
 @media (max-width: 52rem) {
-  .saps-brand__icon {
+  .saps-brand__logo {
     height: 1.8rem;
-  }
-
-  .saps-brand__text {
-    display: none;
   }
 
   .greedy-nav .visible-links {

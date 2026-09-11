@@ -40,14 +40,14 @@ jobs:
           ruby-version: '3.4' # Bundler 4 requires Ruby 3.2 or newer
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
           cache-version: 0 # Increment this number if you need to re-download cached gems
-      - name: Install draw.io
+      - name: Install draw.io and favicon tools
         run: |
           DRAWIO_VERSION=30.0.4
           curl -L --fail --show-error --silent \
             -o /tmp/drawio.deb \
             "https://github.com/jgraph/drawio-desktop/releases/download/v${DRAWIO_VERSION}/drawio-amd64-${DRAWIO_VERSION}.deb"
           sudo apt-get update
-          sudo apt-get install -y xvfb /tmp/drawio.deb
+          sudo apt-get install -y xvfb librsvg2-bin imagemagick /tmp/drawio.deb
       - name: Export SAPS logo assets
         run: |
           xvfb-run -a drawio \
@@ -56,7 +56,7 @@ jobs:
             --page-index 1 \
             --crop \
             --transparent \
-            --theme light \
+            --svg-theme light \
             --embed-svg-fonts false \
             --output assets/SAPSIcon.svg \
             SAPS.drawio
@@ -66,25 +66,25 @@ jobs:
             --page-index 2 \
             --crop \
             --transparent \
-            --theme light \
+            --svg-theme light \
             --embed-svg-fonts false \
             --output assets/SAPSLogo.svg \
             SAPS.drawio
           ruby -e 'Dir["assets/SAPS*.svg"].each { |path| svg = File.read(path); svg.sub!(/\sstyle="background:\s*transparent;\s*background-color:\s*transparent;\s*color-scheme:[^"]*"/, ""); File.write(path, svg) }'
       - name: Build favicon assets
         run: |
+          mkdir -p assets/icons
           rsvg-convert --width 512 --height 512 --keep-aspect-ratio \
-            _site_source/assets/icons/icon.svg \
-            --output /tmp/binsparse-icon-source.png
-          convert /tmp/binsparse-icon-source.png -gravity center \
-            -background none -extent 512x512 /tmp/binsparse-icon.png
-          convert /tmp/binsparse-icon.png -resize 180x180 \
-            _site_source/assets/icons/apple-touch-icon.png
-          convert /tmp/binsparse-icon.png -resize 192x192 \
-            _site_source/assets/icons/icon-192.png
-          cp /tmp/binsparse-icon.png _site_source/assets/icons/icon-512.png
-          convert /tmp/binsparse-icon.png -define icon:auto-resize=48,32,16 \
-            _site_source/favicon.ico
+            assets/SAPSIcon.svg \
+            --output "$RUNNER_TEMP/saps-icon-source.png"
+          convert "$RUNNER_TEMP/saps-icon-source.png" -gravity center \
+            -background none -extent 512x512 assets/icons/icon-512.png
+          convert assets/icons/icon-512.png -resize 180x180 \
+            assets/icons/apple-touch-icon.png
+          convert assets/icons/icon-512.png -resize 192x192 \
+            assets/icons/icon-192.png
+          convert assets/icons/icon-512.png -define icon:auto-resize=48,32,16 \
+            favicon.ico
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
